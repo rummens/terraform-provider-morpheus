@@ -1,14 +1,14 @@
 default: dev 
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
-INSTALL_PATH=~/.local/share/terraform/plugins/localhost/providers/morpheus/0.0.1/linux_$(GOARCH)
+INSTALL_PATH=~/.local/share/terraform/plugins/localhost/providers/morpheus/ab-0.0.1/linux_$(GOARCH)
 BUILD_ALL_PATH=${PWD}/bin
 
 ifeq ($(GOOS), darwin)
-	INSTALL_PATH=~/Library/Application\ Support/io.terraform/plugins/localhost/providers/morpheus/0.0.1/darwin_$(GOARCH)
+	INSTALL_PATH=~/Library/Application\ Support/io.terraform/plugins/localhost/providers/morpheus/ab-0.0.1/darwin_$(GOARCH)
 endif
 ifeq ($(GOOS), "windows")
-	INSTALL_PATH=%APPDATA%/HashiCorp/Terraform/plugins/localhost/providers/morpheus/0.0.1/windows_$(GOARCH)
+	INSTALL_PATH=%APPDATA%/HashiCorp/Terraform/plugins/localhost/providers/morpheus/ab-0.0.1/windows_$(GOARCH)
 endif
 
 dev:
