@@ -2,6 +2,7 @@ package morpheus
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/gomorpheus/morpheus-go-sdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -28,17 +29,19 @@ func resourceServiceCatalogPlaceCatalogOrder() *schema.Resource {
 				Type:        schema.TypeList,
 				Description: "Order item configuration",
 				Optional:    false,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"catalog_item_type_id": {
 							Type:        schema.TypeInt,
 							Description: "The id of the catalog item type to be ordered",
 							Required:    false,
+							Optional:    true,
 						},
 						"catalog_item_type_name": {
 							Type:        schema.TypeString,
 							Description: "The name of the catalog item type to be ordered",
-							Required:    false,
+							Optional:    true,
 						},
 						"config": {
 							Type:        schema.TypeString,
@@ -49,15 +52,20 @@ func resourceServiceCatalogPlaceCatalogOrder() *schema.Resource {
 							Type:        schema.TypeString,
 							Description: "If workflow catalog item type, specify 'instance', 'server' or 'appliance'",
 							Required:    false,
+							Optional:    true,
 						},
 						"target": {
 							Type:        schema.TypeInt,
 							Description: "If workflow catalog item type, resource (Instance or Server) id for context when running workflow",
 							Required:    false,
+							Optional:    true,
 						},
 					},
 				},
 			},
+		},
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
@@ -68,25 +76,35 @@ func resourceServiceCatalogPlaceCatalogOrderCreate(ctx context.Context, d *schem
 	var diags diag.Diagnostics
 
 	catalogOrder := make(map[string]interface{})
+
 	catalogOrder["items"] = parseCatalogOrderItems(d.Get("order_item").([]interface{}))
 
-	req := &morpheus.Request{
-		Body: map[string]interface{}{
-			"order": catalogOrder,
-		},
+	body := map[string]interface{}{
+		"order": catalogOrder,
 	}
 
-	resp, err := client.CreateCatalogItem(req)
+	j, err := json.Marshal(body)
+	if err != nil {
+		log.Fatal("json encoding issue", err)
+	}
+
+	log.Printf("request body json: %s", j)
+
+	req := &morpheus.Request{
+		Body: body,
+	}
+
+	resp, err := client.PlaceCatalogOrder(req)
 	if err != nil {
 		log.Printf("API FAILURE: %s - %s", resp, err)
 		return diag.FromErr(err)
 	}
 	log.Printf("API RESPONSE: %s", resp)
 
-	result := resp.Result.(*morpheus.CreateCatalogItemResult)
-	catalogItemType := result.CatalogItem
+	result := resp.Result.(*morpheus.PlaceCatalogOrderResult)
+	order := result.Order
 
-	d.SetId(int64ToString(catalogItemType.ID))
+	d.SetId(int64ToString(order.ID))
 
 	return diags
 }
@@ -94,18 +112,25 @@ func resourceServiceCatalogPlaceCatalogOrderCreate(ctx context.Context, d *schem
 func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{} {
 	var orderItems []map[string]interface{}
 
+	log.Printf("\n\n\norderItemList count: %d\n\n\n", len(orderItemList))
+
 	for i := 0; i < len(orderItemList); i++ {
-		oI := map[string]interface{}{}
+		oI := make(map[string]interface{})
 		oIConfig := orderItemList[i].(map[string]interface{})
 		for k, v := range oIConfig {
+
 			switch k {
 			case "catalog_item_type_id":
-				oI["type"] = map[string]int{
-					"id": v.(int),
+				if v.(int) != 0 {
+					oI["type"] = map[string]int{
+						"id": v.(int),
+					}
 				}
 			case "catalog_item_type_name":
-				oI["type"] = map[string]string{
-					"name": v.(string),
+				if v.(string) != "" {
+					oI["type"] = map[string]string{
+						"name": v.(string),
+					}
 				}
 			case "config":
 				oI["config"] = v.(string)
@@ -114,7 +139,9 @@ func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{
 			case "target":
 				oI["target"] = v.(int)
 			}
+
 		}
+
 		orderItems = append(orderItems, oI)
 	}
 
