@@ -208,17 +208,17 @@ Build the provider using `make dev`. This will place the provider onto your syst
 make dev
 ```
 
-This is fork of the core Terraform provider. 
+This is a fork of the core Terraform provider. 
 To avoid collisions with the core provider when hosted locally for use or development, you'll need to ensure that your Terraform file contains the information necessary to find the plugin when running `terraform init`. 
 
-`make dev` will use a version number of `ab-0.0.1`, so the following block will work:
+`make dev` will use a version number of `0.0.1-ab`, so the following block will work:
 
 ```hcl
 terraform {
   required_providers {
     morpheus = {
       source = "localhost/providers/morpheus"
-      version = "ab-0.0.1"
+      version = "0.0.1-ab"
     }
   }
 }
