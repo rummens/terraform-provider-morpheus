@@ -1,4 +1,4 @@
-resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_on_name" {
+resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_multiple_items" {
 
   order_item {
     catalog_item_type_name = "Ubuntu 22.04"
