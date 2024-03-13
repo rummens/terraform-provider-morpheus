@@ -133,7 +133,14 @@ func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{
 					}
 				}
 			case "config":
-				oI["config"] = v.(string)
+				var conf map[string]string
+				if v.(string) != "" {
+					err := json.Unmarshal([]byte(v.(string)), &conf)
+					if err != nil {
+						log.Println("config unmarshal error", err)
+					}
+					oI["config"] = conf
+				}
 			case "context":
 				oI["context"] = v.(string)
 			case "target":
