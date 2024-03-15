@@ -1,0 +1,38 @@
+---
+page_title: "morpheus_service_plan Resource - terraform-provider-morpheus"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# morpheus_service_plan
+
+{{ .Description | trimspace }}
+
+> Please note this Resource provides create only functionality. Due to the nature of catalog items, and how they represent
+configuration of other resources, there is no state management provided with this resource. It is not possible to update, or delete
+the ordered items, as would normally be the case with a Terraform resource
+
+## Example Usage
+
+### Order on Name
+
+{{tffile "examples/resources/morpheus_service_catalog_place_catalog_order/resource_ordered_with_name.tf"}}
+
+### Order on ID
+
+{{tffile "examples/resources/morpheus_service_catalog_place_catalog_order/resource_ordered_with_id.tf"}}
+
+### Order multiple items in single resourcce
+
+{{tffile "examples/resources/morpheus_service_catalog_place_catalog_order/resource_multiple_items_ordered.tf"}}
+
+
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Import is supported using the following syntax:
+
+{{codefile "shell" "examples/resources/morpheus_service_plan/import.sh" }}
