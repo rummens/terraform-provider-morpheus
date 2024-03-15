@@ -123,7 +123,6 @@ func parseCatalogOrderItems(orderItemList []interface{}) ([]map[string]interface
 		oIConfig := orderItemList[i].(map[string]interface{})
 		var hasId, hasName bool
 		for k, v := range oIConfig {
-
 			switch k {
 			case "catalog_item_type_id":
 				if v.(int) != 0 {
