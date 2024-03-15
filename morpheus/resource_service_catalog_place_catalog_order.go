@@ -3,6 +3,7 @@ package morpheus
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gomorpheus/morpheus-go-sdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -77,7 +78,12 @@ func resourceServiceCatalogPlaceCatalogOrderCreate(ctx context.Context, d *schem
 
 	catalogOrder := make(map[string]interface{})
 
-	catalogOrder["items"] = parseCatalogOrderItems(d.Get("order_item").([]interface{}))
+	items, err := parseCatalogOrderItems(d.Get("order_item").([]interface{}))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	catalogOrder["items"] = items
 
 	body := map[string]interface{}{
 		"order": catalogOrder,
@@ -109,25 +115,26 @@ func resourceServiceCatalogPlaceCatalogOrderCreate(ctx context.Context, d *schem
 	return diags
 }
 
-func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{} {
+func parseCatalogOrderItems(orderItemList []interface{}) ([]map[string]interface{}, error) {
 	var orderItems []map[string]interface{}
-
-	log.Printf("\n\n\norderItemList count: %d\n\n\n", len(orderItemList))
 
 	for i := 0; i < len(orderItemList); i++ {
 		oI := make(map[string]interface{})
 		oIConfig := orderItemList[i].(map[string]interface{})
+		var hasId, hasName bool
 		for k, v := range oIConfig {
 
 			switch k {
 			case "catalog_item_type_id":
 				if v.(int) != 0 {
+					hasId = true
 					oI["type"] = map[string]int{
 						"id": v.(int),
 					}
 				}
 			case "catalog_item_type_name":
 				if v.(string) != "" {
+					hasName = true
 					oI["type"] = map[string]string{
 						"name": v.(string),
 					}
@@ -138,6 +145,7 @@ func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{
 					err := json.Unmarshal([]byte(v.(string)), &conf)
 					if err != nil {
 						log.Println("config unmarshal error", err)
+						return nil, err
 					}
 					oI["config"] = conf
 				}
@@ -149,10 +157,15 @@ func parseCatalogOrderItems(orderItemList []interface{}) []map[string]interface{
 
 		}
 
+		if !hasName && !hasId {
+			// though this is optional config we need to supply one or the other
+			// here we have neither
+			return nil, fmt.Errorf("a catalog item type 'name' or 'id' was not supplied")
+		}
 		orderItems = append(orderItems, oI)
 	}
 
-	return orderItems
+	return orderItems, nil
 
 }
 
