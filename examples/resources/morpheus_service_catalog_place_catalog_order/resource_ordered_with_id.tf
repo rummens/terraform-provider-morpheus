@@ -1,12 +1,16 @@
-resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_on_id" {
+
+resource "morpheus_service_catalog_place_catalog_order" "tf_order_go_dev_server_id" {
 
   order_item {
-    catalog_item_type_id = "9"
+
+    catalog_item_type_id = "1"
     config               = <<EOF
       {
-        "customInstanceName": "My Ubuntu Instance 2",
-        "optionTypeKey 2":" value 2",
-        "optionTypeKey 3":" value 3"
+        "instanceName": "Go Development Server 1201",
+        "group": "1",
+        "cloud": "2",
+        "resourcePool": "pool-8",
+        "goVersion": "1.20.1"
       }
     EOF
   }

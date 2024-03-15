@@ -18,15 +18,18 @@ the ordered items, as would normally be the case with a Terraform resource
 ### Order on Name
 
 ```terraform
-resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_on_name" {
+resource "morpheus_service_catalog_place_catalog_order" "tf_order_go_dev_server_name" {
 
   order_item {
-    catalog_item_type_name = "Ubuntu 22.04"
+
+    catalog_item_type_name = "Go Development Server"
     config                 = <<EOF
       {
-        "customInstanceName": "My Ubuntu Instance",
-        "optionTypeKey 2":" value 2",
-        "optionTypeKey 3":" value 3"
+        "instanceName": "Go Development Server 1211",
+        "group": "1",
+        "cloud": "2",
+        "resourcePool": "pool-8",
+        "goVersion": "1.21.1"
       }
     EOF
   }
@@ -37,15 +40,18 @@ resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_cata
 ### Order on ID
 
 ```terraform
-resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_on_id" {
+resource "morpheus_service_catalog_place_catalog_order" "tf_order_go_dev_server_id" {
 
   order_item {
-    catalog_item_type_id = "9"
+
+    catalog_item_type_id = "1"
     config               = <<EOF
       {
-        "customInstanceName": "My Ubuntu Instance 2",
-        "optionTypeKey 2":" value 2",
-        "optionTypeKey 3":" value 3"
+        "instanceName": "Go Development Server 1201",
+        "group": "1",
+        "cloud": "2",
+        "resourcePool": "pool-8",
+        "goVersion": "1.20.1"
       }
     EOF
   }
@@ -53,29 +59,35 @@ resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_cata
 }
 ```
 
-### Order multiple items in single resourcce
+### Order multiple items in single resource
 
 ```terraform
-resource "morpheus_service_catalog_place_catalog_order" "tf_example_service_catalog_order_multiple_items" {
+resource "morpheus_service_catalog_place_catalog_order" "tf_order_go_dev_server_multiple" {
 
   order_item {
-    catalog_item_type_name = "Ubuntu 22.04"
+
+    catalog_item_type_name = "Go Development Server"
     config                 = <<EOF
       {
-        "customInstanceName": "My Ubuntu Instance",
-        "optionTypeKey 2":" value 2",
-        "optionTypeKey 3":" value 3"
+        "instanceName": "My Go Development Server 1211",
+        "group": "1",
+        "cloud": "2",
+        "resourcePool": "pool-8",
+        "goVersion": "1.21.1"
       }
     EOF
   }
 
   order_item {
-    catalog_item_type_id = "9"
+
+    catalog_item_type_id = "1"
     config               = <<EOF
       {
-        "customInstanceName": "My Ubuntu Instance 2",
-        "optionTypeKey 2":" value 2",
-        "optionTypeKey 3":" value 3"
+        "instanceName": "Go Development Server 1201",
+        "group": "1",
+        "cloud": "2",
+        "resourcePool": "pool-8",
+        "goVersion": "1.20.1"
       }
     EOF
   }
