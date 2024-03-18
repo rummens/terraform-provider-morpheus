@@ -1,11 +1,11 @@
 ---
-page_title: "morpheus_service_plan Resource - terraform-provider-morpheus"
+page_title: "morpheus_service_catalog_place_catalog_order Resource - terraform-provider-morpheus"
 subcategory: ""
 description: |-
   Provides a Morpheus service catalog place catalog order, resource
 ---
 
-# morpheus_service_plan
+# morpheus_service_catalog_place_catalog_order
 
 Provides a Morpheus service catalog place catalog order, resource
 
