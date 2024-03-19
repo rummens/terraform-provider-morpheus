@@ -143,6 +143,7 @@ func Provider() *schema.Provider {
 			"morpheus_script_template":                       resourceScriptTemplate(),
 			"morpheus_security_package":                      resourceSecurityPackage(),
 			"morpheus_select_list_option_type":               resourceSelectListOptionType(),
+			"morpheus_service_catalog_place_catalog_order":   resourceServiceCatalogPlaceCatalogOrder(),
 			"morpheus_service_plan":                          resourceServicePlan(),
 			"morpheus_servicenow_integration":                resourceServiceNowIntegration(),
 			"morpheus_shell_script_task":                     resourceShellScriptTask(),
